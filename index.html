@@ -7,7 +7,6 @@
 <title>HayKino</title>
 
 <style>
-
 *{
     box-sizing:border-box;
     margin:0;
@@ -76,6 +75,7 @@ body.light .card{
 
 .card h3{
     padding:10px;
+    font-size: 16px;
 }
 
 .watch{
@@ -117,23 +117,17 @@ footer{
     padding:20px;
     color:#888;
 }
-
 </style>
 </head>
 <body>
 
 <div class="header">
-
-<div class="logo">🎬</div>
-
-<h1>HayKino</h1>
-
-<p>Ֆիլմեր և Սերիալներ</p>
-
-<button class="theme-btn" onclick="toggleTheme()">
-🌙 Գիշերային ռեժիմ
-</button>
-
+    <div class="logo">🎬</div>
+    <h1>HayKino</h1>
+    <p>Ֆիլմեր և Սերիալներ</p>
+    <button class="theme-btn" onclick="toggleTheme()">
+        🌙 Գիշերային ռեժիմ
+    </button>
 </div>
 
 <div class="section">
@@ -143,97 +137,124 @@ footer{
 </div>
 
 <div class="player" id="player">
-
-<button class="close" onclick="closePlayer()">
-✖ Փակել
-</button>
-
-<video id="video" controls></video>
-
+    <button class="close" onclick="closePlayer()">
+        ✖ Փակել
+    </button>
+    <video id="video" controls></video>
 </div>
 
 <footer>
-@ArmKino_bot
+    @ArmKino_bot
 </footer>
 
 <script>
+// 1. Ֆիլմերի մեծ ցուցակը (Array)
+const moviesList = [
+    {
+        "title": "Տղամարդիկ",
+        "image": "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=500",
+        "video": "https://www.w3schools.com/html/mov_bbb.mp4"
+    },
+    {
+        "title": "Կտոր մը երկինք",
+        "image": "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=500",
+        "video": "https://img.asnap.com/sample.mp4"
+    },
+    {
+        "title": "Մեր մանկության տանգոն",
+        "image": "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=500",
+        "video": "https://www.w3schools.com/html/movie.mp4"
+    },
+    {
+        "title": "Ինտերստելար (Interstellar)",
+        "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500",
+        "video": "https://www.w3schools.com/html/mov_bbb.mp4"
+    },
+    {
+        "title": "Մատանիքների տիրակալը",
+        "image": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500",
+        "video": "https://www.w3schools.com/html/movie.mp4"
+    },
+    {
+        "title": "Հարրի Փոթեր",
+        "image": "https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=500",
+        "video": "https://img.asnap.com/sample.mp4"
+    },
+    {
+        "title": "Գլադիատոր (Gladiator)",
+        "image": "https://images.unsplash.com/photo-1559181567-c3190ca9959b?w=500",
+        "video": "https://www.w3schools.com/html/mov_bbb.mp4"
+    },
+    {
+        "title": "Ալադին (Մուլտֆիլմ)",
+        "image": "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=500",
+        "video": "https://www.w3schools.com/html/movie.mp4"
+    },
+    {
+        "title": "Տիտանիկ (Titanic)",
+        "image": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=500",
+        "video": "https://img.asnap.com/sample.mp4"
+    },
+    {
+        "title": "Հարսնացուն հյուսիսից",
+        "image": "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=500",
+        "video": "https://www.w3schools.com/html/mov_bbb.mp4"
+    },
+    {
+        "title": "Շրեկ (Shrek)",
+        "image": "https://images.unsplash.com/photo-1608889174637-3c44f6326f2a?w=500",
+        "video": "https://www.w3schools.com/html/movie.mp4"
+    },
+    {
+        "title": "Ավատար (Avatar)",
+        "image": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=500",
+        "video": "https://img.asnap.com/sample.mp4"
+    }
+];
 
+// 2. Թեմայի փոփոխման ֆունկցիա
 function toggleTheme(){
-
     document.body.classList.toggle("light");
-
     localStorage.setItem(
         "theme",
-        document.body.classList.contains("light")
-        ? "light"
-        : "dark"
+        document.body.classList.contains("light") ? "light" : "dark"
     );
-
 }
 
 if(localStorage.getItem("theme")==="light"){
     document.body.classList.add("light");
 }
 
-fetch("movies.json")
-.then(r=>r.json())
-.then(movies=>{
+// 3. Ֆիլմերի ավտոմատ ցուցադրում էջում
+const container = document.getElementById("movies");
 
-    const container =
-        document.getElementById("movies");
-
-    movies.forEach(movie=>{
-
-        container.innerHTML += `
-        <div class="card">
-
-            <img src="${movie.image}">
-
-            <h3>${movie.title}</h3>
-
-            <button
-                class="watch"
-                onclick="playMovie('${movie.video}')">
-                ▶ Դիտել
-            </button>
-
-        </div>
-        `;
-
-    });
-
+moviesList.forEach(movie => {
+    container.innerHTML += `
+    <div class="card">
+        <img src="${movie.image}">
+        <h3>${movie.title}</h3>
+        <button class="watch" onclick="playMovie('${movie.video}')">
+            ▶ Դիտել
+        </button>
+    </div>
+    `;
 });
 
+// 4. Նվագարկչի (Player) ֆունկցիաներ
 function playMovie(url){
-
-    const player =
-        document.getElementById("player");
-
-    const video =
-        document.getElementById("video");
-
+    const player = document.getElementById("player");
+    const video = document.getElementById("video");
     video.src = url;
-
     player.style.display = "block";
-
     video.play();
-
 }
 
 function closePlayer(){
-
-    const player =
-        document.getElementById("player");
-
-    const video =
-        document.getElementById("video");
-
+    const player = document.getElementById("player");
+    const video = document.getElementById("video");
     video.pause();
-
     player.style.display = "none";
-
 }
-
 </script>
 
 </body>
